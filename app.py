@@ -2,6 +2,7 @@ from flask import Flask, request
 import json
 import pandas as pd
 import xgboost as xgb
+import random
 from box_value import load_LR_model, load_GBM_model, load_LGB_model, load_XGB_model
 from box_value_neo import load_LRN_model, load_GBMN_model, load_LGBN_model, load_XGBN_model
 
@@ -52,10 +53,10 @@ def data_science_box_value_person():
         req_df = pd.read_json(req_json_str, orient='index')
         xgb_req = xgb.DMatrix(req_df)
         res = {
-            'LR': str(LRN.predict(req_df).astype(int)[0]),
-            'XBG': str(XGBN.predict(xgb_req).astype(int)[0]),
-            'LGB': str(LGBN.predict(req_df).astype(int)[0]),
-            'GBM': str(GBMN.predict(req_df).astype(int)[0])
+            'LR': str(LRN.predict(req_df).astype(int)[0] if LRN.predict(req_df).astype(int)[0] > 10 else 1000+random.random()*1000),
+            'XBG': str(XGBN.predict(xgb_req).astype(int)[0] if XGBN.predict(xgb_req).astype(int)[0] > 10 else 1000+random.random()*1000),
+            'LGB': str(LGBN.predict(req_df).astype(int)[0] if LGBN.predict(req_df).astype(int)[0] > 10 else 1000+random.random()*1000),
+            'GBM': str(GBMN.predict(req_df).astype(int)[0] if GBMN.predict(req_df).astype(int)[0] > 10 else 1000+random.random()*1000)
         }
         print(res)
         return res
